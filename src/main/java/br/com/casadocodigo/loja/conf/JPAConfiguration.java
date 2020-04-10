@@ -18,43 +18,42 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * */
 @EnableTransactionManagement
 public class JPAConfiguration {
-
+	
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(){
-		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		
+		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-				
+		
 //		Adaptador do JPA que iremos utilizar
 		factoryBean.setJpaVendorAdapter(vendorAdapter);
 		
 //		DataSource - gerencia as conexoes para nos
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setUsername("root");
-		dataSource.setPassword("");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/casadocodigo");
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		
+		dataSource.setPassword("root");
+		dataSource.setUrl("jdbc:mysql://localhost/casadocodigo");
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		factoryBean.setDataSource(dataSource);
 		
 //		Classe responsavel por salvar propriedades do Hibernate
-		Properties props = new Properties();
-		props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-		props.setProperty("hibernate.show_sql", "true");
+		Properties properties = new Properties();
+		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+		properties.setProperty("hibernate.show_sql", "true");
 //		hbm2ddl - hibernate mapping ou mapeamento do JPA '2' (to/para) ddl
 //		ou seja, toda vez que mudar o modelo, o hibernate mude/gerencie o banco
 //		para nao nos preocuparmos com ter de realizar a alteracao manualmente
-		props.setProperty("hibernate.hbm2ddl.auto", "update");
+		properties.setProperty("hibernate.hbm2ddl.auto", "update");
 		
-		factoryBean.setJpaProperties(props);
+		factoryBean.setJpaProperties(properties);
 		
-//		Falar onde que estao cada ENTIDADE pro Hibernate poder escanear/procurar por essas
-//		entidades
+//		Falar onde que estao cada ENTIDADE pro Hibernate poder 
+//		escanear/procurar por essas entidades
 		factoryBean.setPackagesToScan("br.com.casadocodigo.loja.models");
-	
+		
 		return factoryBean;
 	}
-	
+
 	
 	/**
 	 * Metodo que sera um BEAN do Spring (de responsabilidade do Spring)
@@ -64,5 +63,6 @@ public class JPAConfiguration {
 	public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
 		return new JpaTransactionManager(emf);
 	}
+	
 	
 }

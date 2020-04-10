@@ -1,4 +1,4 @@
-package br.com.casadocodigo.loja.daos;
+package br.com.casadocodigo.loja.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
