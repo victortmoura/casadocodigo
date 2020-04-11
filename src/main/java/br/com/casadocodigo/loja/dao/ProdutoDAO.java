@@ -1,5 +1,7 @@
 package br.com.casadocodigo.loja.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -12,7 +14,7 @@ import br.com.casadocodigo.loja.models.Produto;
 	 mas o spring so consegue injetar objetos que ele conhece, que ele gerencia,
 	 se ele nao conhecer o ProdutoDAO, ele nao vai injetar.
 	 Entao precisamos anotar a classe com @Repository para fazer com que o SPRING
- conheça de fato a classe.
+ conheï¿½a de fato a classe.
  
  @Transacional O Spring vai fazer a transacao do Objeto
  */
@@ -30,6 +32,11 @@ public class ProdutoDAO {
 	
 	public void gravar(Produto produto) {
 		manager.persist(produto);
+	}
+
+	public List<Produto> listar() {
+		return manager.createQuery("SELECT p FROM Produto p", Produto.class)
+				.getResultList();
 	}
 	
 }
