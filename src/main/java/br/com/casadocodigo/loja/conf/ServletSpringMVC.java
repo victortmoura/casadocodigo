@@ -2,7 +2,6 @@ package br.com.casadocodigo.loja.conf;
 
 import javax.servlet.Filter;
 
-import org.hibernate.annotations.Filters;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
