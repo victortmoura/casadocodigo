@@ -16,6 +16,7 @@
 	<table>
 		<tr>
 			<td>Título</td>
+			<td>Data de Lançamento</td>
 			<td>Descrição</td>
 			<td>Páginas</td>
 		</tr>
@@ -23,6 +24,7 @@
 		<c:forEach items="${produtos}" var="produto">
 			<tr>
 				<td>${produto.titulo }</td>
+				<!-- <td>${produto.getDataLancamento() }</td> -->
 				<td>${produto.descricao }</td>
 				<td>${produto.paginas }</td>
 			</tr>
