@@ -1,5 +1,7 @@
 package br.com.casadocodigo.loja.models;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.ElementCollection;
@@ -17,9 +19,12 @@ public class Produto {
 	private String titulo;
 	private String descricao;
 	private int paginas;
+	private Calendar dataLancamento;
 
 	@ElementCollection
 	private List<Preco> precos;
+	
+	private String sumarioPath;
 	
 	public String getTitulo() {
 		return titulo;
@@ -56,9 +61,28 @@ public class Produto {
 		this.precos = precos;
 	}
 	
+	public Date getDataLancamentoTime() {
+		return dataLancamento.getTime();
+	}
+	
+	public Calendar getDataLancamento() {
+		return dataLancamento;
+	}
+	
+	public void setDataLancamento(Calendar dataLancamento) {
+		this.dataLancamento = dataLancamento;
+	}
+	
+	public String getSumarioPath() {
+		return sumarioPath;
+	}
+	public void setSumarioPath(String sumarioPath) {
+		this.sumarioPath = sumarioPath;
+	}
 	@Override
 	public String toString() {
 		return "Produto [titulo=" + titulo + ", descricao=" + descricao + ", paginas=" + paginas + "]";
 	}
+	
 
 }

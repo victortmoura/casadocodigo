@@ -11,6 +11,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,7 +21,7 @@ import br.com.casadocodigo.loja.models.TipoPreco;
 import br.com.casadocodigo.loja.validation.ProdutoValidation;
 
 @Controller
-@RequestMapping("produtos")
+@RequestMapping("/produtos")
 public class ProdutosController {
 
 	//Anotacao responsavel por injetar o DAO dentro do Controller
@@ -34,9 +35,15 @@ public class ProdutosController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(new ProdutoValidation());
 	}
-
+	
+	
+	/** OBS: "Neither BindingResult nor plain target object for bean name 
+	 * 'produto' available as request attribute"
+	 * Esse erro estourou quando o form.jsp esperava receber um obj disponível
+	 * do tipo "Produto" que o Spring precisa enviar pro form. 
+	 * */
 	@RequestMapping("form")
-	public ModelAndView form() {
+	public ModelAndView form(Produto produto) {
 		ModelAndView modelAndView = new ModelAndView("produtos/form");
 		modelAndView.addObject("tipos", TipoPreco.values());
 		return modelAndView;
@@ -57,11 +64,13 @@ public class ProdutosController {
 	 necessário para que seja possível essa validação automática.
  * */
 	@RequestMapping(method=RequestMethod.POST)
-	public ModelAndView gravar(@Valid Produto produto, BindingResult result, 
+	public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto, BindingResult result, 
 			RedirectAttributes redirectAttributes){
 		
+		System.out.println(sumario.getOriginalFilename());
+		
 		if(result.hasErrors()) {
-			return form();
+			return form(produto);
 		}
 		
 		dao.gravar(produto);
