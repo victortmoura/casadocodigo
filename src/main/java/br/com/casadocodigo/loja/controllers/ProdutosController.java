@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.casadocodigo.loja.dao.ProdutoDAO;
+import br.com.casadocodigo.loja.infra.FileSaver;
 import br.com.casadocodigo.loja.models.Produto;
 import br.com.casadocodigo.loja.models.TipoPreco;
 import br.com.casadocodigo.loja.validation.ProdutoValidation;
@@ -28,20 +29,9 @@ public class ProdutosController {
 	@Autowired
 	private ProdutoDAO dao;
 	
-	/**
-	 * Vai ligar nosso validador com o produto
-	 * */
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.addValidators(new ProdutoValidation());
-	}
+	@Autowired
+	private FileSaver fileSaver;
 	
-	
-	/** OBS: "Neither BindingResult nor plain target object for bean name 
-	 * 'produto' available as request attribute"
-	 * Esse erro estourou quando o form.jsp esperava receber um obj disponível
-	 * do tipo "Produto" que o Spring precisa enviar pro form. 
-	 * */
 	@RequestMapping("form")
 	public ModelAndView form(Produto produto) {
 		ModelAndView modelAndView = new ModelAndView("produtos/form");
@@ -56,7 +46,7 @@ public class ProdutosController {
 	2. Já o segundo vai fazer o redirecionamento após o fluxo terminar
 	A questão é: a ordem dos parâmetros IMPORTA isso porque o Spring considera
 	que se está querendo validar o Produto, o resultado dessa validação tem que vir
-	logo depois
+	logo depois.
 	Com Validator do Spring, temos a possibilidade de configurar o controller 
 	para que utilize automaticamente o validador todas as vezes que for
 	necessário validar a classe desejada, ou seja, a classe que precisa ser 
@@ -67,11 +57,12 @@ public class ProdutosController {
 	public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto, BindingResult result, 
 			RedirectAttributes redirectAttributes){
 		
-		System.out.println(sumario.getOriginalFilename());
-		
 		if(result.hasErrors()) {
 			return form(produto);
 		}
+		
+		String path = fileSaver.write("arquivos-sumario", sumario);
+		produto.setSumarioPath(path);
 		
 		dao.gravar(produto);
 
@@ -85,6 +76,14 @@ public class ProdutosController {
 //		quando esse resquest é um POST, todos os dados que foram enviados também
 //		são repetidos. 
 		return  new ModelAndView("redirect:produtos");
+	}
+	
+	/**
+	 * Vai ligar nosso validador com o produto
+	 * */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(new ProdutoValidation());
 	}
 	
 	@RequestMapping(method=RequestMethod.GET)
